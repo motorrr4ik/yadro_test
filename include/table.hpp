@@ -3,16 +3,17 @@
 
 class Table{
     private:
+        int tableId;
         int costPerHour;
         int workingHours;
         bool ifBusy;
 
     public:
-        Table();
-        void setStatus();
+        Table(int tableId, int costPerHour, bool ifBusy);
+        void setStatus(bool status);
         bool isBusy();
         void countWorkingHours();
-        void countProfit();
+        int countProfit();
 };
 
 #endif

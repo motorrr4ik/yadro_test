@@ -54,7 +54,7 @@ bool Club::ifAvailableTables(){
 }
 
 void Club::serveClient(std::string const& clientName, std::string const& time){
-    if(!isClubWorking) return;
+    if(!isClubWorking(time)) return;
     if(!ifAvailableTables && (clientNamesInQueue.size() == numberOfTables)) return;
     if(!ifAvailableTables){
         clientNamesInQueue.push(clientName);

@@ -11,6 +11,7 @@ class Table{
         int costPerHour;
         int workingHours;
         bool ifBusy;
+        std::string currentUserName;
         std::string startSession;
         std::string endSession;
         void countWorkingHours();
@@ -20,6 +21,7 @@ class Table{
         bool isBusy();
         int countProfit();
         int getTableId();
+        void setUserName(std::string const& name);
 };
 
 #endif

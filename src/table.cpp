@@ -56,3 +56,6 @@ int Table::getTableId(){
     return tableId;
 }
 
+void Table::setUserName(std::string const& name){
+    currentUserName = name;
+}

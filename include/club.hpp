@@ -21,8 +21,8 @@ class Club{
 
     public:
         Club(int tablePrice, int numberOfTables, std::string startTime, std::string endTime);
-        bool ifTableBusy(Table const& table);
         bool isClubWorking(std::string const& time);
         bool ifAvailableTables();
+        void serveClient();
 };
 #endif

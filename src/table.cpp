@@ -52,3 +52,7 @@ void Table::countWorkingHours(){
 
 }
 
+int Table::getTableId(){
+    return tableId;
+}
+

@@ -14,12 +14,12 @@ class Table{
         std::string startSession;
         std::string endSession;
         void countWorkingHours();
-
     public:
         Table(int tableId, int costPerHour, bool ifBusy);
         void setStatus(bool status, std::string const& time);
         bool isBusy();
         int countProfit();
+        int getTableId();
 };
 
 #endif

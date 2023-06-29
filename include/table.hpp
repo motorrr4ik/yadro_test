@@ -1,4 +1,4 @@
-#ifndef TABlE
+#ifndef TABLE
 #define TABLE
 
 #include<string>

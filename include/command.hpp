@@ -23,9 +23,6 @@ class Command{
         int getTableId();
         void setTableId(int newTableId);
         std::string toString();
-        std::string fromIdToString(Ids id);
-
-
-
+        std::string fromIdToString(Ids);
 };
 #endif

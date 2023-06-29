@@ -59,3 +59,7 @@ int Table::getTableId(){
 void Table::setUserName(std::string const& name){
     currentUserName = name;
 }
+
+std::string Table::getUserName(){
+    return currentUserName;
+}

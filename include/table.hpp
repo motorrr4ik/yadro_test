@@ -22,6 +22,7 @@ class Table{
         int countProfit();
         int getTableId();
         void setUserName(std::string const& name);
+        std::string getUserName();
 };
 
 #endif

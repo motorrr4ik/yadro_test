@@ -13,7 +13,7 @@ void Table::setStatus(bool status, std::string const& time){
 }
 
 bool Table::isBusy(){
-    return isBusy;
+    return ifBusy;
 }
 
 int Table::countProfit(){

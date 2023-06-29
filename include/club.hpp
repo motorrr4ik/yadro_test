@@ -18,11 +18,16 @@ class Club{
         std::string endTime;
         std::vector<std::string> startTimeDivided;
         std::vector<std::string> endTimeDivided;
-        std::vector<std::string>&  splitTimeToVector(std::string const& time);
+        std::vector<std::string>  splitTimeToVector(std::string const& time);
         void initTables();
+        void setTablePrice(int price);
+        void setNumberOfTables(int number);
+        void setStartTime(std::string const& time);
+        void setEndTime(std::string const& time);
 
     public:
-        Club(int tablePrice, int numberOfTables, std::string startTime, std::string endTime);
+        Club();
+        void initClub(int price, int number, std::string const& startTime, std::string const& endTime);
         bool isClubWorking(std::string const& time);
         bool ifAvailableTables();
         void serveClient(std::string const& clientName, std::string const& time);

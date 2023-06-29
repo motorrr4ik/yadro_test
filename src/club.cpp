@@ -1,14 +1,8 @@
 #include"../include/club.hpp"
 
-Club::Club(int tablePrice, int numberOfTables, std::string startTime, std::string endTime):
-            tablePrice(tablePrice), numberOfTables(numberOfTables), startTime(startTime), endTime(endTime),startTimeDivided(2), endTimeDivided(2){
-                startTimeDivided = splitTimeToVector(startTime);
-                endTimeDivided = splitTimeToVector(endTime);
-                initTables();
-}
+Club::Club():tablePrice(0), numberOfTables(0), numberOfClients(0), tables(1), startTime(""), endTime(""){};
 
-
-std::vector<std::string>& Club::splitTimeToVector(std::string const& time){
+std::vector<std::string> Club::splitTimeToVector(std::string const& time){
     std::vector<std::string> timeVector(2);
     std::stringstream ssTime(time);
     std::string buffer;
@@ -23,6 +17,32 @@ void Club::initTables(){
     for(int i = 0; i < numberOfTables; ++i){
         tables.push_back(Table(i+1,tablePrice,false));
     }
+}
+
+void Club::setTablePrice(int price){
+    tablePrice = price;
+}
+
+void Club::setNumberOfTables(int number){
+    numberOfTables = number;
+}
+
+void Club::setStartTime(std::string const& time){
+    startTime = time;
+}
+
+void Club::setEndTime(std::string const& time){
+    endTime = time;
+}
+
+void Club::initClub(int price, int number, std::string const& startTime, std::string const& endTime){
+    setTablePrice(price);
+    setNumberOfTables(number);
+    setStartTime(startTime);
+    setEndTime(endTime);
+    initTables();
+    startTimeDivided = splitTimeToVector(startTime);
+    endTimeDivided = splitTimeToVector(endTime);
 }
 
 bool Club::isClubWorking(std::string const& time){

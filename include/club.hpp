@@ -5,6 +5,7 @@
 #include<vector>
 #include<string>
 #include<sstream>
+#include<queue>
 
 class Club{
     private:
@@ -12,6 +13,7 @@ class Club{
         int numberOfTables;
         int numberOfClients;
         std::vector<Table> tables;
+        std::queue<std::string> clientNamesInQueue;
         std::string startTime;
         std::string endTime;
         std::vector<std::string> startTimeDivided;
@@ -23,6 +25,7 @@ class Club{
         Club(int tablePrice, int numberOfTables, std::string startTime, std::string endTime);
         bool isClubWorking(std::string const& time);
         bool ifAvailableTables();
-        void serveClient();
+        void serveClient(std::string const& clientName, std::string const& time);
+        void clientLeaves(std::string const& clientName, std::string const& time);
 };
 #endif

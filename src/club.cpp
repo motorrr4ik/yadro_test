@@ -52,3 +52,34 @@ bool Club::ifAvailableTables(){
     }
     return !counter == numberOfTables;
 }
+
+void Club::serveClient(std::string const& clientName, std::string const& time){
+    if(!isClubWorking) return;
+    if(!ifAvailableTables && (clientNamesInQueue.size() == numberOfTables)) return;
+    if(!ifAvailableTables){
+        clientNamesInQueue.push(clientName);
+        return;
+    }
+
+    for(int i = 0; i < numberOfTables; ++i){
+        if(!tables[i].isBusy()){
+            tables[i].setStatus(true, time);
+            tables[i].setUserName(clientName);
+            break;
+        }
+    }
+}
+
+void Club::clientLeaves(std::string const& clientName, std::string const& time){
+    for(int i = 0; i < numberOfTables; ++i){
+        if(clientName == tables[i].getUserName()){
+            tables[i].setStatus(false, time);
+        }
+    }
+
+    if(!clientNamesInQueue.empty()){
+        std::string queueClient = clientNamesInQueue.front();
+        serveClient(queueClient, time);
+        clientNamesInQueue.pop();
+    }
+}

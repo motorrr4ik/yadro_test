@@ -82,7 +82,7 @@ bool Club::ifTableIsFree(int idNum){
     return false;
 }
 
-bool Club::ifClientInClub(std::string const& clientName){
+bool Club::isClientInClub(std::string const& clientName){
     for(int i = 0; i < numberOfTables; ++i){
         if((tables[i].getUserName() == clientName) || 
                         (clientNamesInQueue[i] == clientName)) return true;
@@ -100,6 +100,7 @@ GeneratedEvent Club::putClientToQueue(std::string const& clientName, std::string
 }
 
 GeneratedEvent Club::serveClient(std::string const& clientName, std::string const& time){
+    if(!isClientInClub) return GeneratedEvent(time, "13", "ClientUnknown","",0);
     if(!isClubWorking(time)) return GeneratedEvent(time, "13", "NotOpenYet","",0);
     if(!ifAvailableTables) return GeneratedEvent(time, "13", "PlaceIsBusy","",0);
 
@@ -114,6 +115,7 @@ GeneratedEvent Club::serveClient(std::string const& clientName, std::string cons
 }
 
 GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string const& time){
+    if(!isClientInClub) return GeneratedEvent(time, "13", "ClientUnknown","",0);
     for(int i = 0; i < numberOfTables; ++i){
         if(clientName == tables[i].getUserName()){
             tables[i].setStatus(false, time);
@@ -136,6 +138,7 @@ GeneratedEvent Club::handleIncomingCommand(Command& command){
     {
     case Ids::COME:
         if(!isClubWorking) return GeneratedEvent(command.getTime(), "13", "NotOpenYet","",0);
+        if(isClientInClub) return GeneratedEvent(command.getTime(), "13", "YouShallNotPass","",0);\
         break;
     case Ids::SIT:
         return serveClient(command.getUserName(), command.getTime());

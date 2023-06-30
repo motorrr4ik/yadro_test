@@ -33,7 +33,7 @@ class Club{
         bool isClubWorking(std::string const& time);
         bool ifAvailableTables();
         bool ifTableIsFree(int idNum);
-        bool ifClientInClub(std::string const& clientName);
+        bool isClientInClub(std::string const& clientName);
         GeneratedEvent putClientToQueue(std::string const& clientName, std::string const& time);
         GeneratedEvent serveClient(std::string const& clientName, std::string const& time);
         GeneratedEvent clientLeaves(std::string const& clientName, std::string const& time);

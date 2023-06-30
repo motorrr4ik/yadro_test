@@ -2,6 +2,8 @@
 #define CLUB
 
 #include"table.hpp"
+#include"command.hpp"
+#include"generatedEvent.hpp"
 #include<vector>
 #include<string>
 #include<sstream>
@@ -13,7 +15,7 @@ class Club{
         int numberOfTables;
         int numberOfClients;
         std::vector<Table> tables;
-        std::queue<std::string> clientNamesInQueue;
+        std::deque<std::string> clientNamesInQueue;
         std::string startTime;
         std::string endTime;
         std::vector<std::string> startTimeDivided;
@@ -30,7 +32,11 @@ class Club{
         void initClub(int price, int number, std::string const& startTime, std::string const& endTime);
         bool isClubWorking(std::string const& time);
         bool ifAvailableTables();
-        void serveClient(std::string const& clientName, std::string const& time);
-        void clientLeaves(std::string const& clientName, std::string const& time);
+        bool ifTableIsFree(int idNum);
+        bool ifClientInClub(std::string const& clientName);
+        GeneratedEvent putClientToQueue(std::string const& clientName, std::string const& time);
+        GeneratedEvent serveClient(std::string const& clientName, std::string const& time);
+        GeneratedEvent clientLeaves(std::string const& clientName, std::string const& time);
+        GeneratedEvent handleIncomingCommand(Command& command);
 };
 #endif

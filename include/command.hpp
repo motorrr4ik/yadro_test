@@ -22,7 +22,5 @@ class Command{
         void setOperationId(int idNum);
         int getTableId();
         void setTableId(int newTableId);
-        std::string toString();
-        std::string fromIdToString(Ids);
 };
 #endif

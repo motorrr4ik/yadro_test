@@ -19,7 +19,7 @@ class Command{
         std::string getUserName();
         void setUserName(std::string const& newName);
         Ids getOperationId();
-        void setOperationId(Ids newId);
+        void setOperationId(int idNum);
         int getTableId();
         void setTableId(int newTableId);
         std::string toString();

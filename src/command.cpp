@@ -24,8 +24,33 @@ Ids Command::getOperationId(){
     return id;
 }
 
-void Command::setOperationId(Ids newId){
-    id = newId;
+void Command::setOperationId(int idNum){
+    switch (idNum)
+    {
+    case 1:
+        id = Ids::COME;
+        break;
+     case 2:
+        id = Ids::SIT;
+        break;
+     case 3:
+        id = Ids::WAIT;
+        break;
+    case 4:
+        id = Ids::LEAVE;
+        break;
+     case 11:
+        id = Ids::LEAVE_AT_THE_AND;
+        break;
+     case 12:
+        id = Ids::SIT_AFTER_FREE;
+        break;
+     case 13:
+        id = Ids::ERROR;
+        break;            
+    default:
+        break;
+    }
 }
 
 int Command::getTableId(){

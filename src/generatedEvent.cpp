@@ -7,7 +7,11 @@ GeneratedEvent::GeneratedEvent(bool operationStatus):ifOperationOk(operationStat
                     time(""), operationId(""),errorMessage(""),clientName(""), tableId(0){}
 
 std::string GeneratedEvent::toString(){
-
+    if(tableId){
+        return time + " " + operationId + " " + clientName + " " + std::to_string(tableId);
+    }else{
+        return time + " " + operationId + " " + errorMessage;
+    }
 }
 
 bool GeneratedEvent::isOperationOk(){

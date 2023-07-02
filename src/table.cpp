@@ -21,8 +21,8 @@ int Table::countProfit(){
 }
 
 void Table::countWorkingHours(){
-    std::vector<std::string> startTimeDivided(2);
-    std::vector<std::string> endTimeDivided(2);
+    std::vector<std::string> startTimeDivided;
+    std::vector<std::string> endTimeDivided;
     std::stringstream ssStart(startSession);
     std::stringstream ssEnd(endSession);
     std::string buffer;
@@ -37,8 +37,8 @@ void Table::countWorkingHours(){
         endTimeDivided.push_back(buffer);
     }
 
-    startHour = stoi(startTimeDivided[0]);
-    endHour = stoi(endTimeDivided[0]);
+    startHour = std::stoi(startTimeDivided[0]);
+    endHour = std::stoi(endTimeDivided[0]);
 
     if(!startTimeDivided[1].empty()){
         ++startHour;

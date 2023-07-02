@@ -1,5 +1,6 @@
 #ifndef EVENTSID
 #define EVENTID
+
 enum class Ids{
     COME = 1,
     SIT = 2,
@@ -9,4 +10,5 @@ enum class Ids{
     SIT_AFTER_FREE = 12,
     ERROR = 13
 };
+
 #endif

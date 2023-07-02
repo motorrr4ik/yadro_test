@@ -1,7 +1,6 @@
 #ifndef GENERATED_EVENT
 #define GENERATED_EVENT
 
-#include"eventIds.hpp"
 #include<string>
 
 class GeneratedEvent{

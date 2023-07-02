@@ -12,7 +12,7 @@ class GeneratedEvent{
         int tableId;
         bool ifOperationOk;
     public:
-        GeneratedEvent(std::string time, std::string  operationId, std::string errorMessage, std::string clientName, int tableId);
+        GeneratedEvent(std::string const& time, std::string const& operationId, std::string const& errorMessage, std::string const& clientName, int tableId);
         GeneratedEvent(bool operationStatus);
         std::string toString();
         bool isOperationOk();

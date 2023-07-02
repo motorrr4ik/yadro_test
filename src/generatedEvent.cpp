@@ -1,6 +1,6 @@
 #include"../include/generatedEvent.hpp"
 
-GeneratedEvent::GeneratedEvent(std::string time, std::string  operationId, std::string errorMessage, std::string clientName, int tableId)
+GeneratedEvent::GeneratedEvent(std::string const& time, std::string const& operationId, std::string const& errorMessage, std::string const& clientName, int tableId)
             :time(time), operationId(operationId),errorMessage(errorMessage),clientName(clientName), tableId(tableId), ifOperationOk(false){}
 
 GeneratedEvent::GeneratedEvent(bool operationStatus):ifOperationOk(operationStatus),
@@ -13,7 +13,6 @@ std::string GeneratedEvent::toString(){
         return time + " " + operationId + " " + errorMessage;
     }
 }
-
 bool GeneratedEvent::isOperationOk(){
     return ifOperationOk;
 }

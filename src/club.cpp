@@ -1,6 +1,6 @@
 #include"../include/club.hpp"
 
-Club::Club():tablePrice(0), numberOfTables(0), numberOfClients(0), tables(1), startTime(""), endTime(""){};
+Club::Club():tablePrice(0), numberOfTables(0), numberOfClients(0), startTime(""), endTime(""){};
 
 std::vector<std::string> Club::splitTimeToVector(std::string const& time){
     std::vector<std::string> timeVector(2);
@@ -15,7 +15,8 @@ std::vector<std::string> Club::splitTimeToVector(std::string const& time){
 
 void Club::initTables(){
     for(int i = 0; i < numberOfTables; ++i){
-        tables.push_back(Table(i+1,tablePrice,false));
+        Table t(i+1,tablePrice,false);
+        tables.push_back(t);
     }
 }
 
@@ -100,9 +101,9 @@ GeneratedEvent Club::putClientToQueue(std::string const& clientName, std::string
 }
 
 GeneratedEvent Club::serveClient(std::string const& clientName, std::string const& time){
-    if(!isClientInClub) return GeneratedEvent(time, "13", "ClientUnknown","",0);
+    if(!isClientInClub(clientName)) return GeneratedEvent(time, "13", "ClientUnknown","",0);
     if(!isClubWorking(time)) return GeneratedEvent(time, "13", "NotOpenYet","",0);
-    if(!ifAvailableTables) return GeneratedEvent(time, "13", "PlaceIsBusy","",0);
+    if(!ifAvailableTables()) return GeneratedEvent(time, "13", "PlaceIsBusy","",0);
 
     for(int i = 0; i < numberOfTables; ++i){
         if(!tables[i].isBusy()){
@@ -115,7 +116,7 @@ GeneratedEvent Club::serveClient(std::string const& clientName, std::string cons
 }
 
 GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string const& time){
-    if(!isClientInClub) return GeneratedEvent(time, "13", "ClientUnknown","",0);
+    if(!isClientInClub(clientName)) return GeneratedEvent(time, "13", "ClientUnknown","",0);
     for(int i = 0; i < numberOfTables; ++i){
         if(clientName == tables[i].getUserName()){
             tables[i].setStatus(false, time);
@@ -137,8 +138,8 @@ GeneratedEvent Club::handleIncomingCommand(Command& command){
     switch (command.getOperationId())
     {
     case Ids::COME:
-        if(!isClubWorking) return GeneratedEvent(command.getTime(), "13", "NotOpenYet","",0);
-        if(isClientInClub) return GeneratedEvent(command.getTime(), "13", "YouShallNotPass","",0);\
+        if(!isClubWorking(command.getTime())) return GeneratedEvent(command.getTime(), "13", "NotOpenYet","",0);
+        if(isClientInClub(command.getTime())) return GeneratedEvent(command.getTime(), "13", "YouShallNotPass","",0);\
         break;
     case Ids::SIT:
         return serveClient(command.getUserName(), command.getTime());

@@ -1,6 +1,6 @@
 #include"../include/command.hpp"
 
-Command::Command(std::string const& time, std::string const& userName, Ids id, int tableId = 0):time(time), userName(userName),id(id),tableId(tableId){}
+Command::Command(std::string const& time, std::string const& userName, Ids id, int tableId):time(time), userName(userName),id(id),tableId(tableId){}
 
 Command::Command():time(""), userName(""), tableId(0){}
 

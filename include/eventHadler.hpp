@@ -21,7 +21,7 @@ class eventHadler{
         eventHadler(std::string const& path);
         std::thread start();
         std::vector<std::string> splitIncomingString(std::string const& str);
-        void parseStringToCommand(std::vector<std::string>& vec);
+        Command parseStringToCommand(std::vector<std::string>& vec);
         void handleClubCommandResponse(GeneratedEvent& eventFromClub);
 };
 #endif

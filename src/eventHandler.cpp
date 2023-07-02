@@ -4,7 +4,7 @@ eventHadler::eventHadler(std::string const& str):fromFileStream(str){};
 
 std::vector<std::string> eventHadler::splitIncomingString(std::string const& str){
     std::stringstream incomeStringStream(str);
-    std::vector<std::string> resultVector(3);
+    std::vector<std::string> resultVector;
     std::string buffer;
 
     while(std::getline(incomeStringStream, buffer, ' ')){
@@ -15,7 +15,7 @@ std::vector<std::string> eventHadler::splitIncomingString(std::string const& str
 
 void eventHadler::startHandling(){
     std::string buffer;
-    std::vector<std::string> initParams(3);
+    std::vector<std::string> initParams;
     if(fromFileStream.is_open()){
         for(int i = 0; i < 3; ++i){
             std::getline(fromFileStream, buffer);
@@ -23,16 +23,16 @@ void eventHadler::startHandling(){
         }
     }
 
-    std::vector<std::string> time(2);
+    std::vector<std::string> time;
     time = splitIncomingString(initParams[1]);
-    club.initClub(std::stoi(initParams[0]), std::stoi(initParams[2]), time[0], time[1]);
+    club.initClub(std::stoi(initParams[2]), std::stoi(initParams[0]), time[0], time[1]);
 
     if(fromFileStream.is_open()){
         while(fromFileStream){
             std::getline(fromFileStream, buffer);
             std::cout << buffer << std::endl;
             std::vector<std::string> bufferVec = splitIncomingString(buffer);
-            parseStringToCommand(bufferVec);
+            command = parseStringToCommand(bufferVec);
             GeneratedEvent event = club.handleIncomingCommand(command);
             handleClubCommandResponse(event);
         }
@@ -44,15 +44,17 @@ std::thread eventHadler::start(){
     return t1;
 }
 
-void eventHadler::parseStringToCommand(std::vector<std::string>& vec){
-    command.setTime(vec[0]);
-    command.setOperationId(std::stoi(vec[1]));
-    command.setUserName(vec[2]);
+Command eventHadler::parseStringToCommand(std::vector<std::string>& vec){
+    Command newCommand;
+    newCommand.setTime(vec[0]);
+    newCommand.setOperationId(std::stoi(vec[1]));
+    newCommand.setUserName(vec[2]);
     if(vec.size() > 3){
-        command.setTableId(std::stoi(vec[3]));
+        newCommand.setTableId(std::stoi(vec[3]));
     }else{
-        command.setTableId(0);
+        newCommand.setTableId(0);
     }
+    return newCommand;
 }
 
 void eventHadler::handleClubCommandResponse(GeneratedEvent& eventFromClub){

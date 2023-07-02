@@ -3,7 +3,7 @@
 Club::Club():tablePrice(0), numberOfTables(0), numberOfClients(0), startTime(""), endTime(""){};
 
 std::vector<std::string> Club::splitTimeToVector(std::string const& time){
-    std::vector<std::string> timeVector(2);
+    std::vector<std::string> timeVector;
     std::stringstream ssTime(time);
     std::string buffer;
 
@@ -47,21 +47,23 @@ void Club::initClub(int price, int number, std::string const& startTime, std::st
 }
 
 bool Club::isClubWorking(std::string const& time){
-    std::vector<std::string> currentTime = splitTimeToVector(time);
-    int currentTimeHours = std::stoi(currentTime[0]);
-    int currentTimeMinutes = std::stoi(currentTime[1]);
+    std::vector<std::string> currentTimeVec = splitTimeToVector(time);
+    int currentTimeHours = std::stoi(currentTimeVec[0]);
+    int currentTimeMinutes = std::stoi(currentTimeVec[1]);
 
     int startTimeHours = std::stoi(startTimeDivided[0]);
     int startTimeMinutes = std::stoi(startTimeDivided[1]);
     int endTimeHours = std::stoi(endTimeDivided[0]);
     int endTimeMinutes = std::stoi(endTimeDivided[1]);
 
-    if(currentTimeHours < startTimeHours) return false;
-    if(currentTimeMinutes < startTimeMinutes) return false;
-    if(currentTimeHours > endTimeHours) return false;
-    if(currentTimeMinutes > endTimeMinutes) return false;
+    int startTime = startTimeHours*60 + startTimeMinutes;
+    int endTime = endTimeHours*60 + endTimeMinutes;
+    int currentTime = currentTimeHours*60 + currentTimeMinutes;
 
-    return true;
+    if ((startTime < currentTime) && (currentTime < endTime)){
+        return true;
+    }
+    return false;
 }
 
 bool Club::ifAvailableTables(){
@@ -71,15 +73,13 @@ bool Club::ifAvailableTables(){
             ++counter;
         }
     }
-    return !counter == numberOfTables;
+    return !(counter == numberOfTables);
 }
 
 bool Club::ifTableIsFree(int idNum){
-    for(int i = 0; i < numberOfTables; ++i){
-        if((tables[i].getTableId() == idNum) && !tables[i].isBusy()){
-            return true;
-        }
-    }
+    if(!(idNum > numberOfTables) && !(tables[idNum - 1].isBusy())){
+        return true;
+    } 
     return false;
 }
 
@@ -100,51 +100,59 @@ GeneratedEvent Club::putClientToQueue(std::string const& clientName, std::string
     }
 }
 
-GeneratedEvent Club::serveClient(std::string const& clientName, std::string const& time){
-    if(!isClientInClub(clientName)) return GeneratedEvent(time, "13", "ClientUnknown","",0);
+GeneratedEvent Club::serveClient(std::string const& clientName, std::string const& time, int id){
     if(!isClubWorking(time)) return GeneratedEvent(time, "13", "NotOpenYet","",0);
+    if(!isClientInClub(clientName)) return GeneratedEvent(time, "13", "ClientUnknown","",0);
     if(!ifAvailableTables()) return GeneratedEvent(time, "13", "PlaceIsBusy","",0);
+    if(!ifTableIsFree(id)) return GeneratedEvent(time, "13", "PlaceIsBusy","",0);
 
-    for(int i = 0; i < numberOfTables; ++i){
-        if(!tables[i].isBusy()){
-            tables[i].setStatus(true, time);
-            tables[i].setUserName(clientName);
-            ++numberOfClients;
-            return GeneratedEvent(true);
-        }
+    for (int i = 0 ; i < clientNamesInQueue.size(); ++i){
+        if (clientNamesInQueue[i] == clientName) clientNamesInQueue.erase(
+                            clientNamesInQueue.begin()+i, clientNamesInQueue.begin()+i+1);
     }
+
+    if(!tables[id-1].isBusy()){
+        tables[id-1].setStatus(true, time);
+        tables[id-1].setUserName(clientName);
+        ++numberOfClients;
+        return GeneratedEvent(true);
+    }
+
 }
 
 GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string const& time){
     if(!isClientInClub(clientName)) return GeneratedEvent(time, "13", "ClientUnknown","",0);
+    int id = 1;
     for(int i = 0; i < numberOfTables; ++i){
         if(clientName == tables[i].getUserName()){
+            id += i;
             tables[i].setStatus(false, time);
             --numberOfClients;
         }
     }
-
     if(!clientNamesInQueue.empty()){
         std::string queueClient = clientNamesInQueue.front();
-        serveClient(queueClient, time);
+        serveClient(queueClient, time, id);
         clientNamesInQueue.pop_front();
-        return GeneratedEvent(time, "12", "", clientName, 0);
+        return GeneratedEvent(time, "12", "", clientName, id);
     }
     return GeneratedEvent(true);
 }
 
 GeneratedEvent Club::handleIncomingCommand(Command& command){
-
     switch (command.getOperationId())
     {
     case Ids::COME:
         if(!isClubWorking(command.getTime())) return GeneratedEvent(command.getTime(), "13", "NotOpenYet","",0);
-        if(isClientInClub(command.getTime())) return GeneratedEvent(command.getTime(), "13", "YouShallNotPass","",0);\
+        if(isClientInClub(command.getUserName())) return GeneratedEvent(command.getTime(), "13", "YouShallNotPass","",0);
+        clientNamesInQueue.push_back(command.getUserName());
+        return GeneratedEvent(true);
         break;
     case Ids::SIT:
-        return serveClient(command.getUserName(), command.getTime());
+        return serveClient(command.getUserName(), command.getTime(), command.getTableId());
         break;
     case Ids::WAIT:
+        if(ifAvailableTables()) return GeneratedEvent(command.getTime(), "13", "ICanWaitNoLonger!","",0);
         return putClientToQueue(command.getUserName(), command.getTime());
         break;
     case Ids::LEAVE:

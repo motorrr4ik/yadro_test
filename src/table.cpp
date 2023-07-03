@@ -46,8 +46,8 @@ void Table::countWorkingHours(){
     startMinute = std::stoi(startTimeDivided[1]);
     endMinute = std::stoi(endTimeDivided[1]);
 
-    differenceH = startHour - endHour;
-    differenceM = startMinute - endMinute;
+    differenceH = endHour - startHour;
+    differenceM = endMinute - startMinute;
     allWorkHours += differenceH;
     workingHours += differenceH;
 
@@ -75,6 +75,12 @@ std::string Table::getUserName(){
 }
 
 std::string Table::toString(){
-    return std::to_string(tableId) + " " + std::to_string(countProfit())
-                 + " " +  std::to_string(allWorkHours) + ":" + std::to_string(allWorkMinutes);
+    std::string res = std::to_string(tableId) + " " + std::to_string(countProfit())
+                 + " " +  std::to_string(allWorkHours) + ":";
+    if(allWorkMinutes < 10 ){
+        res = res + "0" + std::to_string(allWorkMinutes);
+    }else{
+        res = res + std::to_string(allWorkMinutes);
+    }
+    return res;
 }

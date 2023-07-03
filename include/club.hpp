@@ -4,11 +4,12 @@
 #include"table.hpp"
 #include"command.hpp"
 #include"generatedEvent.hpp"
- #include<iostream>
+#include<iostream>
 #include<vector>
 #include<string>
 #include<sstream>
 #include<queue>
+#include<algorithm>
 
 class Club{
     private:
@@ -32,11 +33,15 @@ class Club{
         void initClub(int price, int number, std::string const& startTime, std::string const& endTime);
         bool isClubWorking(std::string const& time);
         bool ifAvailableTables();
+        bool ifBusyTables();
         bool ifTableIsFree(int idNum);
         bool isClientInClub(std::string const& clientName);
         GeneratedEvent putClientToQueue(std::string const& clientName, std::string const& time);
         GeneratedEvent serveClient(std::string const& clientName, std::string const& time, int id);
         GeneratedEvent clientLeaves(std::string const& clientName, std::string const& time);
         GeneratedEvent handleIncomingCommand(Command& command);
+        std::string getStartTime();
+        std::string getEndTime();
+        bool endOfWorkDay(std::string const& time);
 };
 #endif

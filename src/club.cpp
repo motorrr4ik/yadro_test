@@ -76,6 +76,16 @@ bool Club::ifAvailableTables(){
     return !(counter == numberOfTables);
 }
 
+bool Club::ifBusyTables(){
+    int counter = 0;
+    for(int i = 0; i < numberOfTables; ++i){
+        if(tables[i].isBusy()){
+            ++counter;
+        }
+    }
+    return !(counter == 0);   
+}
+
 bool Club::ifTableIsFree(int idNum){
     if(!(idNum > numberOfTables) && !(tables[idNum - 1].isBusy())){
         return true;
@@ -159,4 +169,37 @@ GeneratedEvent Club::handleIncomingCommand(Command& command){
     default:
         break;
     }
+}
+
+std::string Club::getStartTime(){
+    return startTime;
+}
+
+std::string Club::getEndTime(){
+    return endTime;
+}
+
+bool Club::endOfWorkDay(std::string const& time){
+    std::vector<std::string> curTime = splitTimeToVector(time);
+    int timeInMinutes = std::stoi(curTime[0])*60 + std::stoi(curTime[1]);
+    int endTimeInMinutes = std::stoi(endTimeDivided[0])*60 + std::stoi(endTimeDivided[1]);
+
+    if((timeInMinutes >= endTimeInMinutes) && (ifBusyTables() || !clientNamesInQueue.empty())){
+        for(int i = 0; i < numberOfTables; ++i){
+            if(tables[i].isBusy()){
+                tables[i].setStatus(false, time);
+                clientNamesInQueue.push_back(tables[i].getUserName());
+            }
+        }
+        std::sort(clientNamesInQueue.begin(), clientNamesInQueue.end());
+        for(int i = 0; i < clientNamesInQueue.size(); ++i){
+            std::cout << GeneratedEvent(time, "11", "",clientNamesInQueue[i],0).toString() << std::endl;
+        }
+        std::cout << endTime << std::endl;
+        for(int i = 0; i < numberOfTables; ++i){
+            std::cout << tables[i].toString() << std::endl;
+        }
+        return true;
+    }
+    return false;
 }

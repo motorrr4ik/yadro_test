@@ -25,6 +25,7 @@ class Table{
         int getTableId();
         void setUserName(std::string const& name);
         std::string getUserName();
+        std::string toString();
 };
 
 #endif

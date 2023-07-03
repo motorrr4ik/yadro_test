@@ -73,3 +73,8 @@ void Table::setUserName(std::string const& name){
 std::string Table::getUserName(){
     return currentUserName;
 }
+
+std::string Table::toString(){
+    return std::to_string(tableId) + " " + std::to_string(countProfit())
+                 + " " +  std::to_string(allWorkHours) + ":" + std::to_string(allWorkMinutes);
+}

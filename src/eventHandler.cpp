@@ -1,6 +1,6 @@
 #include"../include/eventHadler.hpp"
 
-eventHadler::eventHadler(std::string const& str):fromFileStream(str){};
+eventHadler::eventHadler(std::string const& str, bool flag):fromFileStream(str), flag(flag){};
 
 std::vector<std::string> eventHadler::splitIncomingString(std::string const& str){
     std::stringstream incomeStringStream(str);
@@ -19,9 +19,14 @@ void eventHadler::startHandling(){
     if(fromFileStream.is_open()){
         for(int i = 0; i < 3; ++i){
             std::getline(fromFileStream, buffer);
+            if(!stringMatchesPattern(buffer)){
+                flag = stringMatchesPattern(buffer);
+                break;
+            }
             initParams.push_back(buffer);
         }
     }
+    if(!flag) return;
 
     std::vector<std::string> time;
     time = splitIncomingString(initParams[1]);
@@ -31,12 +36,17 @@ void eventHadler::startHandling(){
         while(fromFileStream){
             std::getline(fromFileStream, buffer);
             std::cout << buffer << std::endl;
+            if(!stringMatchesPattern(buffer)){
+                flag = stringMatchesPattern(buffer);
+                break;
+            }
             std::vector<std::string> bufferVec = splitIncomingString(buffer);
             command = parseStringToCommand(bufferVec);
             GeneratedEvent event = club.handleIncomingCommand(command);
             handleClubCommandResponse(event);
         }
     }
+    if(!flag) return;
 }
 
 std::thread eventHadler::start(){
@@ -61,4 +71,12 @@ void eventHadler::handleClubCommandResponse(GeneratedEvent& eventFromClub){
     if(!eventFromClub.isOperationOk()){
         std::cout << eventFromClub.toString() << std::endl;
     }
+}
+
+bool eventHadler::stringMatchesPattern(std::string const& str){
+    std::regex num("[0-9]+");
+    std::regex time("[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}");
+    std::regex command("[0-9]{2}:[0-9]{2} [0-9]{1,2} [a-zA-Z0-9]+ ?[0-9]*");
+    if(std::regex_match(str, num) || std::regex_match(str, time) || std::regex_match(str, command)) return true;
+    return false;
 }

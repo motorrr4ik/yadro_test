@@ -9,19 +9,22 @@
 #include<string>
 #include<vector>
 #include<thread>
+#include<regex>
 
 class eventHadler{
     private:
     Club club;
     Command command;
     std::ifstream fromFileStream;
+    bool flag;
     void startHandling();
 
     public:
-        eventHadler(std::string const& path);
+        eventHadler(std::string const& path, bool flag = true);
         std::thread start();
         std::vector<std::string> splitIncomingString(std::string const& str);
         Command parseStringToCommand(std::vector<std::string>& vec);
         void handleClubCommandResponse(GeneratedEvent& eventFromClub);
+        bool stringMatchesPattern(std::string const& str);
 };
 #endif

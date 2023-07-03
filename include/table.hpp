@@ -14,6 +14,8 @@ class Table{
         std::string currentUserName;
         std::string startSession;
         std::string endSession;
+        int allWorkHours;
+        int allWorkMinutes;
         void countWorkingHours();
     public:
         Table(int tableId, int costPerHour, bool ifBusy);

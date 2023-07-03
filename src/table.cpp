@@ -1,6 +1,6 @@
 #include"../include/table.hpp"
 
-Table::Table(int tableId, int costPerHour, bool ifBusy):tableId(tableId), costPerHour(costPerHour), ifBusy(ifBusy), workingHours(0){};
+Table::Table(int tableId, int costPerHour, bool ifBusy):tableId(tableId), costPerHour(costPerHour), ifBusy(ifBusy), workingHours(0), allWorkHours(0), allWorkMinutes(0){};
 
 void Table::setStatus(bool status, std::string const& time){
     ifBusy = status;
@@ -27,7 +27,11 @@ void Table::countWorkingHours(){
     std::stringstream ssEnd(endSession);
     std::string buffer;
     int startHour = 0;
+    int startMinute = 0;
     int endHour = 0;
+    int endMinute = 0;
+    int differenceH = 0;
+    int differenceM = 0;
 
     while(std::getline(ssStart, buffer, ':')){
         startTimeDivided.push_back(buffer);
@@ -39,16 +43,22 @@ void Table::countWorkingHours(){
 
     startHour = std::stoi(startTimeDivided[0]);
     endHour = std::stoi(endTimeDivided[0]);
+    startMinute = std::stoi(startTimeDivided[1]);
+    endMinute = std::stoi(endTimeDivided[1]);
 
-    if(!startTimeDivided[1].empty()){
-        ++startHour;
+    differenceH = startHour - endHour;
+    differenceM = startMinute - endMinute;
+    allWorkHours += differenceH;
+    workingHours += differenceH;
+
+    if(differenceM < 0){
+        --allWorkHours;
+        allWorkMinutes = 60 + differenceM;
     }
-
-    if(!endTimeDivided[1].empty()){
-        ++endHour;
+    if(differenceM > 0){
+        allWorkMinutes += differenceM;
+        ++workingHours;
     }
-
-    workingHours = workingHours + (startHour - endHour);
 
 }
 

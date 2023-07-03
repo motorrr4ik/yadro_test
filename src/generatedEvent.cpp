@@ -9,8 +9,10 @@ GeneratedEvent::GeneratedEvent(bool operationStatus):ifOperationOk(operationStat
 std::string GeneratedEvent::toString(){
     if(tableId){
         return time + " " + operationId + " " + clientName + " " + std::to_string(tableId);
-    }else{
+    }else if(clientName.empty()){
         return time + " " + operationId + " " + errorMessage;
+    }else{
+        return time + " " + operationId + " " + clientName;
     }
 }
 bool GeneratedEvent::isOperationOk(){

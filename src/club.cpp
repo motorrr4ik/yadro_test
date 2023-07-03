@@ -1,6 +1,6 @@
 #include"../include/club.hpp"
 
-Club::Club():tablePrice(0), numberOfTables(0), numberOfClients(0), startTime(""), endTime(""){};
+Club::Club():tablePrice(0), numberOfTables(0), startTime(""), endTime(""){};
 
 std::vector<std::string> Club::splitTimeToVector(std::string const& time){
     std::vector<std::string> timeVector;
@@ -114,7 +114,6 @@ GeneratedEvent Club::serveClient(std::string const& clientName, std::string cons
     if(!tables[id-1].isBusy()){
         tables[id-1].setStatus(true, time);
         tables[id-1].setUserName(clientName);
-        ++numberOfClients;
         return GeneratedEvent(true);
     }
 
@@ -127,7 +126,6 @@ GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string con
         if(clientName == tables[i].getUserName()){
             id += i;
             tables[i].setStatus(false, time);
-            --numberOfClients;
         }
     }
     if(!clientNamesInQueue.empty()){

@@ -4,7 +4,7 @@
 #include"table.hpp"
 #include"command.hpp"
 #include"generatedEvent.hpp"
-#include<iostream>
+ #include<iostream>
 #include<vector>
 #include<string>
 #include<sstream>
@@ -14,7 +14,6 @@ class Club{
     private:
         int tablePrice;
         int numberOfTables;
-        int numberOfClients;
         std::vector<Table> tables;
         std::deque<std::string> clientNamesInQueue;
         std::string startTime;

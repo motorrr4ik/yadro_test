@@ -1,6 +1,6 @@
 #include"../include/eventHadler.hpp"
 
-eventHadler::eventHadler(std::string const& str, bool flag):fromFileStream(str), flag(flag){};
+eventHadler::eventHadler(std::string const& str):fromFileStream(str), flag(true){};
 
 std::vector<std::string> eventHadler::splitIncomingString(std::string const& str){
     std::stringstream incomeStringStream(str);
@@ -16,7 +16,7 @@ std::vector<std::string> eventHadler::splitIncomingString(std::string const& str
 void eventHadler::startHandling(){
     std::string buffer;
     std::vector<std::string> initParams;
-    if(fromFileStream.is_open()){
+    if(fromFileStream.good() && fromFileStream.is_open()){
         for(int i = 0; i < 3; ++i){
             std::getline(fromFileStream, buffer);
             if(!stringMatchesPattern(buffer)){
@@ -32,7 +32,7 @@ void eventHadler::startHandling(){
     time = splitIncomingString(initParams[1]);
     club.initClub(std::stoi(initParams[2]), std::stoi(initParams[0]), time[0], time[1]);
 
-    if(fromFileStream.is_open()){
+    if(fromFileStream.good() && fromFileStream.is_open()){
         while(fromFileStream){
             std::getline(fromFileStream, buffer);
             std::cout << buffer << std::endl;

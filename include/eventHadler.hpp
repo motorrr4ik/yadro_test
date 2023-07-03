@@ -20,7 +20,7 @@ class eventHadler{
     void startHandling();
 
     public:
-        eventHadler(std::string const& path, bool flag = true);
+        eventHadler(std::string const& path);
         std::thread start();
         std::vector<std::string> splitIncomingString(std::string const& str);
         Command parseStringToCommand(std::vector<std::string>& vec);

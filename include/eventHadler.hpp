@@ -17,6 +17,7 @@ class eventHadler{
     Command command;
     std::ifstream fromFileStream;
     bool flag;
+    bool workDayStatusFlag;
     void startHandling();
 
     public:

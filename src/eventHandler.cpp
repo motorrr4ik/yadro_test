@@ -16,6 +16,7 @@ std::vector<std::string> eventHadler::splitIncomingString(std::string const& str
 void eventHadler::startHandling(){
     std::string buffer;
     std::vector<std::string> initParams;
+    std::vector<std::string> bufferVec;
     if(fromFileStream.good() && fromFileStream.is_open()){
         for(int i = 0; i < 3; ++i){
             std::getline(fromFileStream, buffer);
@@ -32,21 +33,24 @@ void eventHadler::startHandling(){
     time = splitIncomingString(initParams[1]);
     club.initClub(std::stoi(initParams[2]), std::stoi(initParams[0]), time[0], time[1]);
 
+    std::cout << club.getStartTime() << std::endl;
     if(fromFileStream.good() && fromFileStream.is_open()){
-        while(fromFileStream){
+        while(!fromFileStream.eof()){
             std::getline(fromFileStream, buffer);
             std::cout << buffer << std::endl;
             if(!stringMatchesPattern(buffer)){
                 flag = stringMatchesPattern(buffer);
                 break;
             }
-            std::vector<std::string> bufferVec = splitIncomingString(buffer);
+            bufferVec = splitIncomingString(buffer);
+            workDayStatusFlag = club.endOfWorkDay(bufferVec[0]);
             command = parseStringToCommand(bufferVec);
             GeneratedEvent event = club.handleIncomingCommand(command);
             handleClubCommandResponse(event);
         }
     }
     if(!flag) return;
+    if(!workDayStatusFlag) club.endOfWorkDay(club.getEndTime());
 }
 
 std::thread eventHadler::start(){
@@ -76,7 +80,7 @@ void eventHadler::handleClubCommandResponse(GeneratedEvent& eventFromClub){
 bool eventHadler::stringMatchesPattern(std::string const& str){
     std::regex num("[0-9]+");
     std::regex time("[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}");
-    std::regex command("[0-9]{2}:[0-9]{2} [0-9]{1,2} [a-zA-Z0-9]+ ?[0-9]*");
+    std::regex command("[0-9]{2}:[0-9]{2} [0-9]{1,2} [a-zA-Z0-9_-]+ ?[0-9]*");
     if(std::regex_match(str, num) || std::regex_match(str, time) || std::regex_match(str, command)) return true;
     return false;
 }

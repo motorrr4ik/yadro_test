@@ -57,7 +57,9 @@ void eventHadler::startHandling(){
         }
     }
     if(!flag) return;
+    std::cout << "here" << std::endl;
     if(!workDayStatusFlag) club.endOfWorkDay(club.getEndTime()); //Если клуб не завершает свою работу в процессе обработки файла, завершение просходит после
+    fromFileStream.close();
 }
 
 // Запуск потока обработчика

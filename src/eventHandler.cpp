@@ -2,6 +2,8 @@
 
 eventHadler::eventHadler(std::string const& str):fromFileStream(str), flag(true){};
 
+// Метод для разбивки входящего сообщения на компоненты для последующего создания
+// объекта команды с определенными параметрами
 std::vector<std::string> eventHadler::splitIncomingString(std::string const& str){
     std::stringstream incomeStringStream(str);
     std::vector<std::string> resultVector;
@@ -13,6 +15,11 @@ std::vector<std::string> eventHadler::splitIncomingString(std::string const& str
     return resultVector;
 }
 
+// Метод для запуска обработчика событий. Сначала считываются 3 первые строчки для
+// инициализации клуба, затем считываются остальные команды. Во время считывания 
+// происходит проверка входящих строк на соответствие шаблону, создание команды,
+// проверка на открытость/закрытость клуба, отправка команды клубу, получение
+// ответа от клуба и обработка этого ответа.
 void eventHadler::startHandling(){
     std::string buffer;
     std::vector<std::string> initParams;
@@ -27,7 +34,7 @@ void eventHadler::startHandling(){
             initParams.push_back(buffer);
         }
     }
-    if(!flag) return;
+    if(!flag) return; // Данный флаг сигнализирует о неправильном формате строки
 
     std::vector<std::string> time;
     time = splitIncomingString(initParams[1]);
@@ -50,14 +57,16 @@ void eventHadler::startHandling(){
         }
     }
     if(!flag) return;
-    if(!workDayStatusFlag) club.endOfWorkDay(club.getEndTime());
+    if(!workDayStatusFlag) club.endOfWorkDay(club.getEndTime()); //Если клуб не завершает свою работу в процессе обработки файла, завершение просходит после
 }
 
+// Запуск потока обработчика
 std::thread eventHadler::start(){
     std::thread t1(&eventHadler::startHandling, this);
     return t1;
 }
 
+// Парсинг полученной строки в команду для передачи в объект клуба
 Command eventHadler::parseStringToCommand(std::vector<std::string>& vec){
     Command newCommand;
     newCommand.setTime(vec[0]);
@@ -71,12 +80,14 @@ Command eventHadler::parseStringToCommand(std::vector<std::string>& vec){
     return newCommand;
 }
 
+// Обработчик сгенерированных событий - ответов на команды от клуба
 void eventHadler::handleClubCommandResponse(GeneratedEvent& eventFromClub){
     if(!eventFromClub.isOperationOk()){
         std::cout << eventFromClub.toString() << std::endl;
     }
 }
 
+// Проверка входящих строк на правильность с помощью регулярных выражений
 bool eventHadler::stringMatchesPattern(std::string const& str){
     std::regex num("[0-9]+");
     std::regex time("[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}");

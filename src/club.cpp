@@ -2,6 +2,7 @@
 
 Club::Club():tablePrice(0), numberOfTables(0), startTime(""), endTime(""){};
 
+// Данные метод разбиваем входящую строку со временем на вектор для доступа к часам и минутам
 std::vector<std::string> Club::splitTimeToVector(std::string const& time){
     std::vector<std::string> timeVector;
     std::stringstream ssTime(time);
@@ -13,6 +14,7 @@ std::vector<std::string> Club::splitTimeToVector(std::string const& time){
     return timeVector;
 }
 
+// Инициализация столов при создании клуба
 void Club::initTables(){
     for(int i = 0; i < numberOfTables; ++i){
         Table t(i+1,tablePrice,false);
@@ -20,22 +22,25 @@ void Club::initTables(){
     }
 }
 
+// Установка цены за стол в час
 void Club::setTablePrice(int price){
     tablePrice = price;
 }
 
+// Установка количества столов
 void Club::setNumberOfTables(int number){
     numberOfTables = number;
 }
-
+// Установка времени открытия клуба
 void Club::setStartTime(std::string const& time){
     startTime = time;
 }
-
+// Установка времени закрытия клуба
 void Club::setEndTime(std::string const& time){
     endTime = time;
 }
 
+// Инициализация клуба
 void Club::initClub(int price, int number, std::string const& startTime, std::string const& endTime){
     setTablePrice(price);
     setNumberOfTables(number);
@@ -46,6 +51,7 @@ void Club::initClub(int price, int number, std::string const& startTime, std::st
     endTimeDivided = splitTimeToVector(endTime);
 }
 
+// Проверка на работу клуба в данный момент времени
 bool Club::isClubWorking(std::string const& time){
     std::vector<std::string> currentTimeVec = splitTimeToVector(time);
     int currentTimeHours = std::stoi(currentTimeVec[0]);
@@ -65,7 +71,7 @@ bool Club::isClubWorking(std::string const& time){
     }
     return false;
 }
-
+// Проверка на свободные столы, если они есть - возвращаемое значение true
 bool Club::ifAvailableTables(){
     int counter = 0;
     for(int i = 0; i < numberOfTables; ++i){
@@ -76,16 +82,9 @@ bool Club::ifAvailableTables(){
     return !(counter == numberOfTables);
 }
 
-bool Club::ifBusyTables(){
-    int counter = 0;
-    for(int i = 0; i < numberOfTables; ++i){
-        if(tables[i].isBusy()){
-            ++counter;
-        }
-    }
-    return !(counter == 0);   
-}
-
+// Проверка определенного стола на свободное место, так как при инициализации
+// столы были добавлены в порядке возрастания их id, то обращаться можно прямо 
+// по идексу id-1
 bool Club::ifTableIsFree(int idNum){
     if(!(idNum > numberOfTables) && !(tables[idNum - 1].isBusy())){
         return true;
@@ -93,6 +92,7 @@ bool Club::ifTableIsFree(int idNum){
     return false;
 }
 
+// Проверка, находится ли клиент с определнным именем в клубе
 bool Club::isClientInClub(std::string const& clientName){
     for(int i = 0; i < numberOfTables; ++i){
         if((tables[i].getUserName() == clientName) || 
@@ -101,6 +101,7 @@ bool Club::isClientInClub(std::string const& clientName){
     return false;
 }
 
+//Постановка клиента в очередь
 GeneratedEvent Club::putClientToQueue(std::string const& clientName, std::string const& time){
     if(clientNamesInQueue.size() == 3){
         return GeneratedEvent(time, "11","PlaceIsBusy", "",0);
@@ -110,6 +111,7 @@ GeneratedEvent Club::putClientToQueue(std::string const& clientName, std::string
     }
 }
 
+// Обслуживание клиента - предоставление места за столом
 GeneratedEvent Club::serveClient(std::string const& clientName, std::string const& time, int id){
     if(!isClubWorking(time)) return GeneratedEvent(time, "13", "NotOpenYet","",0);
     if(!isClientInClub(clientName)) return GeneratedEvent(time, "13", "ClientUnknown","",0);
@@ -129,6 +131,8 @@ GeneratedEvent Club::serveClient(std::string const& clientName, std::string cons
 
 }
 
+// Обработка ухода клиента из-за стола. Если при этом очередь не пустая, то первый клиент из
+// очереди сядет за только что освободившийся стол
 GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string const& time){
     if(!isClientInClub(clientName)) return GeneratedEvent(time, "13", "ClientUnknown","",0);
     int id = 1;
@@ -147,6 +151,7 @@ GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string con
     return GeneratedEvent(true);
 }
 
+// Обработчик поступающих команд
 GeneratedEvent Club::handleIncomingCommand(Command& command){
     switch (command.getOperationId())
     {
@@ -170,15 +175,16 @@ GeneratedEvent Club::handleIncomingCommand(Command& command){
         break;
     }
 }
-
+// Геттер для времени начала работы
 std::string Club::getStartTime(){
     return startTime;
 }
-
+// Геттер для времени окончания работы
 std::string Club::getEndTime(){
     return endTime;
 }
 
+//Метод обработки окончания рабочего дня
 bool Club::endOfWorkDay(std::string const& time){
     std::vector<std::string> curTime = splitTimeToVector(time);
     int timeInMinutes = std::stoi(curTime[0])*60 + std::stoi(curTime[1]);

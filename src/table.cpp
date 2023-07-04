@@ -2,6 +2,8 @@
 
 Table::Table(int tableId, int costPerHour, bool ifBusy):tableId(tableId), costPerHour(costPerHour), ifBusy(ifBusy), workingHours(0), allWorkHours(0), allWorkMinutes(0){};
 
+// Установка текущего статуса стола занят/не занят. При установке статуса не занят
+// просиходит подсчет отработанного времени
 void Table::setStatus(bool status, std::string const& time){
     ifBusy = status;
     if(ifBusy){
@@ -12,14 +14,17 @@ void Table::setStatus(bool status, std::string const& time){
     }
 }
 
+// Геттер для получения текущего статуса стола
 bool Table::isBusy(){
     return ifBusy;
 }
 
+// Подсчет прибыли
 int Table::countProfit(){
     return workingHours * costPerHour;
 }
 
+// Подсчет времени работы
 void Table::countWorkingHours(){
     std::vector<std::string> startTimeDivided;
     std::vector<std::string> endTimeDivided;
@@ -62,18 +67,22 @@ void Table::countWorkingHours(){
 
 }
 
+// Геттер для id стола
 int Table::getTableId(){
     return tableId;
 }
 
+// Сеттер для имени клиента
 void Table::setUserName(std::string const& name){
     currentUserName = name;
 }
 
+// Геттер для имени клиента
 std::string Table::getUserName(){
     return currentUserName;
 }
 
+// Вывод строки с прибылью и временем
 std::string Table::toString(){
     std::string res = std::to_string(tableId) + " " + std::to_string(countProfit())
                  + " " +  std::to_string(allWorkHours) + ":";

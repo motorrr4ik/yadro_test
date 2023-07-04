@@ -1,6 +1,8 @@
 #ifndef EVENTSID
 #define EVENTID
 
+/* Перечисление событий для входящих и генерируемых событий
+*/
 enum class Ids{
     COME = 1,
     SIT = 2,

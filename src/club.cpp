@@ -114,7 +114,7 @@ bool Club::isClientInClub(std::string const& clientName){
 
 //Постановка клиента в очередь
 GeneratedEvent Club::putClientToQueue(std::string const& clientName, std::string const& time){
-    if(clientNamesInQueue.size() == 3){
+    if(clientNamesInQueue.size() == numberOfTables){
         return GeneratedEvent(time, "11","PlaceIsBusy", "",0);
     }else{
         clientNamesInQueue.push_back(clientName);
@@ -133,7 +133,6 @@ GeneratedEvent Club::serveClient(std::string const& clientName, std::string cons
         if (clientNamesInQueue[i] == clientName) clientNamesInQueue.erase(
                             clientNamesInQueue.begin()+i, clientNamesInQueue.begin()+i+1);
     }
-
     if(!tables[id-1].isBusy()){
         tables[id-1].setStatus(true, time);
         tables[id-1].setUserName(clientName);
@@ -200,7 +199,6 @@ bool Club::endOfWorkDay(std::string const& time){
     std::vector<std::string> curTime = splitTimeToVector(time);
     int timeInMinutes = std::stoi(curTime[0])*60 + std::stoi(curTime[1]);
     int endTimeInMinutes = std::stoi(endTimeDivided[0])*60 + std::stoi(endTimeDivided[1]);
-
     if((timeInMinutes >= endTimeInMinutes) && (ifBusyTables() || !clientNamesInQueue.empty())){
         for(int i = 0; i < numberOfTables; ++i){
             if(tables[i].isBusy()){

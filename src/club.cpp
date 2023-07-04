@@ -82,6 +82,17 @@ bool Club::ifAvailableTables(){
     return !(counter == numberOfTables);
 }
 
+// Проверка занятых столов
+bool Club::ifBusyTables(){
+    int counter = 0;
+    for(int i = 0; i < numberOfTables; ++i){
+        if(tables[i].isBusy()){
+            ++counter;
+        }
+    }
+    return !(counter == 0);   
+}
+
 // Проверка определенного стола на свободное место, так как при инициализации
 // столы были добавлены в порядке возрастания их id, то обращаться можно прямо 
 // по идексу id-1

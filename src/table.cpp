@@ -85,7 +85,13 @@ std::string Table::getUserName(){
 // Вывод строки с прибылью и временем
 std::string Table::toString(){
     std::string res = std::to_string(tableId) + " " + std::to_string(countProfit())
-                 + " " +  std::to_string(allWorkHours) + ":";
+                 + " ";
+    if(allWorkHours < 10){
+        res = res + "0" +  std::to_string(allWorkHours) + ":";
+    }else{
+        res = res +  std::to_string(allWorkHours) + ":";
+    }
+
     if(allWorkMinutes < 10 ){
         res = res + "0" + std::to_string(allWorkMinutes);
     }else{

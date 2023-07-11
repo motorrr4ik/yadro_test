@@ -105,10 +105,9 @@ bool Club::ifTableIsFree(int idNum){
 
 // Проверка, находится ли клиент с определнным именем в клубе
 bool Club::isClientInClub(std::string const& clientName){
-    for(int i = 0; i < clients.size(); ++i){
-        if(clients[i].getName() == clientName) return true;
-    }
-    return false;
+    auto if_name = [&](Client cl) { return cl.getName() == clientName; };
+    auto res = std::find_if(clients.begin(), clients.end(), if_name);
+    return !(res == clients.end());
 }
 
 void Club::welcomeClient(std::string const& name){
@@ -177,6 +176,7 @@ GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string con
     if(clientsInQueue){ 
         cl_it = std::find_if(clients.begin(), clients.end(), if_status);
         serveClient(cl_it->getName(), time, id);
+        --clientsInQueue;
         return GeneratedEvent(time, "12", "", clientName, id);
     }
     return GeneratedEvent(true);

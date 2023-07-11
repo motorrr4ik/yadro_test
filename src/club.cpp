@@ -160,6 +160,9 @@ GeneratedEvent Club::serveClient(std::string const& clientName, std::string cons
 GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string const& time){
     if(!isClientInClub(clientName)) return GeneratedEvent(time, "13", "ClientUnknown","",0);
     int id = 1;
+    auto if_name = [&](Client cl) { return cl.getName() == clientName; };
+    auto if_status = [](Client cl) { return cl.getStatus() == 3; };
+
     for(int i = 0; i < numberOfTables; ++i){
         if(clientName == tables[i].getUserName()){
             id += i;
@@ -167,10 +170,13 @@ GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string con
             break;
         }
     }
-    if(clientsInQueue){
-        std::string queueClient = clientNamesInQueue.front();
-        serveClient(queueClient, time, id);
-        clientNamesInQueue.pop_front();
+
+    auto cl_it = std::find_if(clients.begin(), clients.end(), if_name);
+    clients.erase(cl_it, cl_it+1);
+
+    if(clientsInQueue){ 
+        cl_it = std::find_if(clients.begin(), clients.end(), if_status);
+        serveClient(cl_it->getName(), time, id);
         return GeneratedEvent(time, "12", "", clientName, id);
     }
     return GeneratedEvent(true);

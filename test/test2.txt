@@ -1,0 +1,30 @@
+3
+00:00 23:00
+1
+00:01 1 alice
+00:03 2 alice 1
+00:04 1 bob
+00:05 2 bob 2
+00:06 1 client1
+00:07 2 client1 3
+00:08 1 client3
+00:09 1 client4
+00:10 1 client5
+00:11 1 client6
+00:12 1 client7
+00:13 1 client8
+00:15 3 client2
+00:16 3 client3
+00:17 3 client4
+00:18 3 client5
+00:19 3 client6
+00:20 3 client7
+00:21 3 client8
+01:00 4 alice
+02:00 4 bob
+03:00 1 new_client
+03:01 3 new_client
+04:00 1 alice
+04:01 3 alice
+05:00 1 bob
+05:03 3 bob

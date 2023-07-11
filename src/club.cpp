@@ -1,6 +1,6 @@
 #include"../include/club.hpp"
 
-Club::Club():tablePrice(0), numberOfTables(0), startTime(""), endTime(""){};
+Club::Club():tablePrice(0), numberOfTables(0),clientsInQueue(0), startTime(""), endTime(""){};
 
 // Данные метод разбиваем входящую строку со временем на вектор для доступа к часам и минутам
 std::vector<std::string> Club::splitTimeToVector(std::string const& time){
@@ -105,19 +105,30 @@ bool Club::ifTableIsFree(int idNum){
 
 // Проверка, находится ли клиент с определнным именем в клубе
 bool Club::isClientInClub(std::string const& clientName){
-    for(int i = 0; i < numberOfTables; ++i){
-        if((tables[i].getUserName() == clientName) || 
-                        (clientNamesInQueue[i] == clientName)) return true;
+    for(int i = 0; i < clients.size(); ++i){
+        if(clients[i].getName() == clientName) return true;
     }
     return false;
 }
 
+void Club::welcomeClient(std::string const& name){
+    Client cl(name);
+    cl.setStatus(1);
+    clients.push_back(cl);
+}
+
 //Постановка клиента в очередь
 GeneratedEvent Club::putClientToQueue(std::string const& clientName, std::string const& time){
-    if(clientNamesInQueue.size() == numberOfTables){
+    if(clientsInQueue == numberOfTables){
         return GeneratedEvent(time, "11","PlaceIsBusy", "",0);
     }else{
-        clientNamesInQueue.push_back(clientName);
+        for(int i = 0; i < clients.size(); ++i){
+            if(clients[i].getName() == clientName){
+                clients[i].setStatus(3);
+                ++clientsInQueue;
+                break;
+            }  
+        }
         return GeneratedEvent(true);
     }
 }
@@ -129,10 +140,13 @@ GeneratedEvent Club::serveClient(std::string const& clientName, std::string cons
     if(!ifAvailableTables()) return GeneratedEvent(time, "13", "PlaceIsBusy","",0);
     if(!ifTableIsFree(id)) return GeneratedEvent(time, "13", "PlaceIsBusy","",0);
 
-    for (int i = 0 ; i < clientNamesInQueue.size(); ++i){
-        if (clientNamesInQueue[i] == clientName) clientNamesInQueue.erase(
-                            clientNamesInQueue.begin()+i, clientNamesInQueue.begin()+i+1);
+    for(int i = 0; i < clients.size(); ++i){
+        if(clients[i].getName() == clientName){
+            clients[i].setStatus(2);
+            break;
+        }
     }
+
     if(!tables[id-1].isBusy()){
         tables[id-1].setStatus(true, time);
         tables[id-1].setUserName(clientName);
@@ -150,9 +164,10 @@ GeneratedEvent Club::clientLeaves(std::string const& clientName, std::string con
         if(clientName == tables[i].getUserName()){
             id += i;
             tables[i].setStatus(false, time);
+            break;
         }
     }
-    if(!clientNamesInQueue.empty()){
+    if(clientsInQueue){
         std::string queueClient = clientNamesInQueue.front();
         serveClient(queueClient, time, id);
         clientNamesInQueue.pop_front();
@@ -168,7 +183,8 @@ GeneratedEvent Club::handleIncomingCommand(Command& command){
     case Ids::COME:
         if(!isClubWorking(command.getTime())) return GeneratedEvent(command.getTime(), "13", "NotOpenYet","",0);
         if(isClientInClub(command.getUserName())) return GeneratedEvent(command.getTime(), "13", "YouShallNotPass","",0);
-        clientNamesInQueue.push_back(command.getUserName());
+        welcomeClient(command.getUserName());
+        // clientNamesInQueue.push_back(command.getUserName());
         return GeneratedEvent(true);
         break;
     case Ids::SIT:
